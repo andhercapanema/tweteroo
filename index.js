@@ -52,4 +52,13 @@ app.get("/tweets", (req, res) => {
     res.status(200).send(lastTenTweets);
 });
 
+app.get("/tweets/:filteredUser", (req, res) => {
+    const { filteredUser } = req.params;
+    const tweetsFromFilteredUser = tweets.filter(
+        (tweet) => tweet.username === filteredUser
+    );
+
+    res.status(200).send(tweetsFromFilteredUser);
+});
+
 app.listen(5000);
