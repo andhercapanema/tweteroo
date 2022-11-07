@@ -31,10 +31,13 @@ app.post("/tweets", (req, res) => {
 });
 
 app.get("/tweets", (req, res) => {
-    const lastTenTweets = tweets.slice(tweets.length - 10).map((tweet) => ({
-        ...tweet,
-        avatar: users.find((user) => user.username === tweet.username).avatar,
-    }));
+    const lastTenTweets = tweets
+        .slice(tweets.length >= 10 ? tweets.length - 10 : 0)
+        .map((tweet) => ({
+            ...tweet,
+            avatar: users.find((user) => user.username === tweet.username)
+                .avatar,
+        }));
 
     res.status(200).send(lastTenTweets);
 });
