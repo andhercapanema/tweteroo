@@ -22,7 +22,7 @@ app.post("/sign-up", (req, res) => {
 
     users.push(newUser);
 
-    res.status(200).send("OK");
+    res.status(201).send("OK");
 });
 
 app.post("/tweets", (req, res) => {
