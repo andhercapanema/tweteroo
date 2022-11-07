@@ -26,14 +26,15 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req, res) => {
-    const { username, tweet } = req.body;
+    const { tweet } = req.body;
+    const { user } = req.headers;
 
-    if (!username || !tweet) {
+    if (!user || !tweet) {
         res.status(400).send("Todos os campos são obrigatórios!");
         return;
     }
 
-    const newTweet = { username, tweet };
+    const newTweet = { username: user, tweet };
 
     tweets.push(newTweet);
 
@@ -65,7 +66,7 @@ app.get("/tweets", (req, res) => {
     if (
         numberedPage < 1 ||
         isNaN(page) ||
-        (tweets.length !== 0 && !hasEnoughTweetsToShow)
+        (numberedPage !== 1 && !hasEnoughTweetsToShow)
     ) {
         res.status(400).send("Informe uma página válida!");
         return;
