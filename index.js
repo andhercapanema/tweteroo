@@ -40,16 +40,41 @@ app.post("/tweets", (req, res) => {
     res.status(201).send("OK");
 });
 
-app.get("/tweets", (req, res) => {
-    const lastTenTweets = tweets
-        .slice(tweets.length >= 10 ? tweets.length - 10 : 0)
-        .map((tweet) => ({
-            ...tweet,
-            avatar: users.find((user) => user.username === tweet.username)
-                .avatar,
-        }));
+function filterDisplayedTweets(numberedPage) {
+    const oldestTweetToDisplay = tweets.length - numberedPage * 10;
+    const newestTweetToDisplay = tweets.length - (numberedPage - 1) * 10;
 
-    res.status(200).send(lastTenTweets);
+    return tweets.slice(
+        oldestTweetToDisplay >= 0 ? oldestTweetToDisplay : 0,
+        newestTweetToDisplay
+    );
+}
+
+function getAvatars(displayedTweets) {
+    return displayedTweets.map((tweet) => ({
+        ...tweet,
+        avatar: users.find((user) => user.username === tweet.username).avatar,
+    }));
+}
+
+app.get("/tweets", (req, res) => {
+    const page = req.query.page || 1;
+    const numberedPage = Number(page);
+    const hasEnoughTweetsToShow = (numberedPage - 1) * 10 < tweets.length;
+
+    if (
+        numberedPage < 1 ||
+        isNaN(page) ||
+        (tweets.length !== 0 && !hasEnoughTweetsToShow)
+    ) {
+        res.status(400).send("Informe uma página válida!");
+        return;
+    }
+
+    const displayedTweets = filterDisplayedTweets(numberedPage);
+    const tweetsWithAvatars = getAvatars(displayedTweets);
+
+    res.status(200).send(tweetsWithAvatars);
 });
 
 app.get("/tweets/:filteredUser", (req, res) => {
