@@ -28,11 +28,15 @@ app.post("/tweets", (req, res) => {
     tweets.push(newTweet);
 
     res.status(201).send("OK");
-    console.log(tweets);
 });
 
 app.get("/tweets", (req, res) => {
-    console.log("deu bom");
+    const lastTenTweets = tweets.slice(tweets.length - 10).map((tweet) => ({
+        ...tweet,
+        avatar: users.find((user) => user.username === tweet.username).avatar,
+    }));
+
+    res.status(200).send(lastTenTweets);
 });
 
 app.listen(5000);
