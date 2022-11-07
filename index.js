@@ -75,7 +75,7 @@ app.get("/tweets", (req, res) => {
     const displayedTweets = filterDisplayedTweets(numberedPage);
     const tweetsWithAvatars = getAvatars(displayedTweets);
 
-    res.status(200).send(tweetsWithAvatars);
+    res.status(200).send(tweetsWithAvatars.reverse());
 });
 
 app.get("/tweets/:filteredUser", (req, res) => {
